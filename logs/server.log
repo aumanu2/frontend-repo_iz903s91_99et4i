@@ -1,0 +1,29 @@
+
+> vibe-generated-app@1.0.0 dev
+> vite
+
+
+  VITE v5.4.20  ready in 219 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: http://172.20.55.133:3000/
+9:48:36 AM [vite] warning: Duplicate "className" attribute in JSX element
+58 |          <span className="h-5 w-5 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
+59 |          <span className="h-5 w-5" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', boxShadow: '0 0 18px rgba(20,184,166,0.45)' }}
+60 |            className="ring-2 ring-teal-400 bg-teal-400/20" />
+   |            ^
+61 |          <span className="h-5 w-5 bg-fuchsia-500/20 ring-2 ring-fuchsia-400" />
+62 |        </div>
+
+  Plugin: vite:esbuild
+  File: /home/workspace/src/App.jsx
+9:48:36 AM [vite] warning: Duplicate "className" attribute in JSX element
+330|              <div className="flex items-center gap-2 text-xs text-zinc-500">
+331|                <span className="h-3 w-3 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
+332|                <span className="h-3 w-3" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} className="ring-2 ring-teal-400 bg-teal-400/20" />
+   |                                                                                                      ^
+333|                <span className="h-3 w-3 bg-fuchsia-500/20 ring-2 ring-fuchsia-400" />
+334|              </div>
+
+  Plugin: vite:esbuild
+  File: /home/workspace/src/App.jsx
