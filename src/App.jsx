@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Spline from '@splinetool/react-spline'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { Upload, Play, Shield, ScrollText, TimerReset, Sparkles, MoveRight } from 'lucide-react'
+import { Upload, Play, Shield, ScrollText, TimerReset, Sparkles, MoveRight, Home, BookText, Film, Trophy, Database, Send } from 'lucide-react'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
 const DATASET_URL = 'https://drive.google.com/drive/folders/1H8Kc-ExampleReplaceWithYourFolder' // replace with your drive link
@@ -36,25 +36,73 @@ function useCountdown(targetIso) {
 }
 
 function FloatingShapes() {
-  // Circle, Triangle, Square floating like Squid Game tokens
+  // Circle, Triangle, Square floating like Squid Game tokens with soft volumetric light wash
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      {/* volumetric gradients */}
+      <div className="absolute inset-0 bg-[radial-gradient(1200px_400px_at_50%_-10%,rgba(236,72,153,0.10),transparent),radial-gradient(900px_300px_at_10%_20%,rgba(20,184,166,0.10),transparent),radial-gradient(1100px_400px_at_90%_10%,rgba(244,63,94,0.08),transparent)]" />
+
       <motion.div
-        className="absolute -left-10 top-24 h-28 w-28 rounded-full bg-pink-500/20 ring-2 ring-pink-500/50 blur-[1px]"
+        className="absolute -left-10 top-24 h-28 w-28 rounded-full bg-pink-500/20 ring-2 ring-pink-500/50 shadow-[0_0_80px_rgba(236,72,153,0.35)]"
         animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute right-8 top-36 h-24 w-24 bg-teal-400/20 ring-2 ring-teal-400/60"
+        className="absolute right-8 top-36 h-24 w-24 bg-teal-400/20 ring-2 ring-teal-400/60 shadow-[0_0_80px_rgba(20,184,166,0.35)]"
         style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
         animate={{ y: [0, 25, 0], rotate: [0, 10, -5, 0] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute left-1/2 bottom-10 h-20 w-20 -translate-x-1/2 bg-fuchsia-500/10 ring-2 ring-fuchsia-400/60 shadow-[0_0_40px_rgba(244,63,94,0.3)]"
+        className="absolute left-1/2 bottom-10 h-20 w-20 -translate-x-1/2 bg-fuchsia-500/10 ring-2 ring-fuchsia-400/60 shadow-[0_0_80px_rgba(244,63,94,0.35)]"
         animate={{ y: [0, -15, 0], scale: [1, 1.05, 1] }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       />
+
+      {/* soft shafts of light */}
+      <div className="absolute left-10 top-0 h-full w-24 rotate-6 bg-gradient-to-b from-pink-500/10 via-transparent to-transparent blur-2xl" />
+      <div className="absolute right-12 top-0 h-full w-24 -rotate-6 bg-gradient-to-b from-teal-400/10 via-transparent to-transparent blur-2xl" />
+    </div>
+  )
+}
+
+function Navbar() {
+  const items = [
+    { id: 'home', label: 'Home', icon: Home },
+    { id: 'rules', label: 'Rules', icon: BookText },
+    { id: 'demo', label: 'Demo', icon: Film },
+    { id: 'compete', label: 'How to Compete', icon: Trophy },
+    { id: 'dataset', label: 'Dataset', icon: Database },
+    { id: 'submit', label: 'Submit Bot', icon: Send }
+  ]
+
+  const handleClick = (e, id) => {
+    e.preventDefault()
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  return (
+    <div className="fixed inset-x-0 top-3 z-50 flex justify-center px-3">
+      <nav className="relative flex w-full max-w-5xl items-center justify-between gap-2 rounded-2xl border border-pink-500/40 bg-zinc-900/30 px-3 py-2 shadow-[0_10px_60px_rgba(236,72,153,0.25)] backdrop-blur-xl">
+        {/* glowing edges */}
+        <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-pink-400/50 [box-shadow:inset_0_0_40px_rgba(236,72,153,0.35)]" />
+        <div className="relative z-10 flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+          {items.map(({ id, label, icon: Icon }) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              onClick={(e) => handleClick(e, id)}
+              className="group inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-zinc-200/90 transition-colors hover:text-white"
+            >
+              <span className="rounded-md border border-pink-500/40 bg-pink-500/10 p-1.5 text-pink-300 shadow-[0_0_18px_rgba(236,72,153,0.45)] group-hover:bg-pink-500/20">
+                <Icon className="h-4 w-4" />
+              </span>
+              <span className="drop-shadow-[0_0_10px_rgba(236,72,153,0.4)]">{label}</span>
+            </a>
+          ))}
+        </div>
+      </nav>
     </div>
   )
 }
@@ -167,13 +215,13 @@ function CountdownTimer() {
 
 function Hero() {
   return (
-    <section className="relative min-h-[90vh] w-full overflow-hidden bg-[#09090b]">
+    <section id="home" className="relative min-h-[90vh] w-full overflow-hidden bg-[#09090b]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(236,72,153,0.1),transparent_45%),radial-gradient(circle_at_80%_0%,rgba(45,212,191,0.08),transparent_40%),radial-gradient(circle_at_50%_80%,rgba(244,63,94,0.08),transparent_40%)]" />
       <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-black/60 to-transparent pointer-events-none" />
 
       <FloatingShapes />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 pb-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-28 pb-4 sm:px-6 lg:px-8">
         <NeonTitle />
         <motion.p
           variants={fadeUp}
@@ -209,22 +257,40 @@ function Hero() {
 function RuleItem({ icon: Icon, title, desc, index }) {
   return (
     <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      custom={index}
-      className="group relative overflow-hidden rounded-xl border border-pink-500/30 bg-gradient-to-b from-zinc-900/70 to-black/60 p-5 shadow-[0_0_30px_rgba(236,72,153,0.08)]"
+      transition={{ duration: 0.6, delay: 0.05 * index, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative overflow-hidden rounded-xl border border-pink-500/30 bg-gradient-to-b from-zinc-900/70 to-black/60 p-0 shadow-[0_0_30px_rgba(236,72,153,0.08)]"
     >
-      <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-[radial-gradient(600px_200px_at_50%_-10%,rgba(236,72,153,0.25),transparent)]" />
-      <div className="relative z-10 flex items-start gap-4">
-        <div className="mt-1 rounded-lg bg-pink-500/15 p-2 ring-1 ring-pink-500/50 text-pink-300 shadow-[0_0_20px_rgba(236,72,153,0.4)]">
-          <Icon className="h-5 w-5" />
+      {/* sliding door reveal */}
+      <div className="relative p-5">
+        <div className="relative z-10 flex items-start gap-4">
+          <div className="mt-1 rounded-lg bg-pink-500/15 p-2 ring-1 ring-pink-500/50 text-pink-300 shadow-[0_0_20px_rgba(236,72,153,0.4)]">
+            <Icon className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-white">{title}</h3>
+            <p className="mt-1 text-sm text-zinc-300/80">{desc}</p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold text-white">{title}</h3>
-          <p className="mt-1 text-sm text-zinc-300/80">{desc}</p>
-        </div>
+
+        {/* left panel */}
+        <motion.div
+          className="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-zinc-950/80"
+          initial={{ x: 0 }}
+          whileInView={{ x: '-100%' }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        />
+        {/* right panel */}
+        <motion.div
+          className="pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-zinc-950/80"
+          initial={{ x: 0 }}
+          whileInView={{ x: '100%' }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        />
       </div>
     </motion.div>
   )
@@ -239,7 +305,7 @@ function Rules() {
   ]
 
   return (
-    <section className="relative w-full bg-black py-16">
+    <section id="rules" className="relative w-full bg-black py-16">
       <div className="absolute inset-0 bg-[radial-gradient(400px_200px_at_20%_0%,rgba(236,72,153,0.1),transparent),radial-gradient(500px_250px_at_80%_20%,rgba(45,212,191,0.08),transparent)]" />
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
@@ -263,7 +329,7 @@ function Rules() {
 
 function VideoShowcase() {
   return (
-    <section className="relative bg-gradient-to-b from-black to-zinc-950 py-16">
+    <section id="demo" className="relative bg-gradient-to-b from-black to-zinc-950 py-16">
       <div className="absolute inset-0 bg-[radial-gradient(700px_300px_at_50%_0%,rgba(20,184,166,0.12),transparent)]" />
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mx-auto max-w-3xl text-center">
@@ -345,7 +411,7 @@ function CompetitionFlow() {
     'Upload bot code',
   ]
   return (
-    <section className="relative bg-[radial-gradient(800px_300px_at_50%_-10%,rgba(236,72,153,0.10),transparent),linear-gradient(to_bottom,#050505,#030303)] py-16">
+    <section id="compete" className="relative bg-[radial-gradient(800px_300px_at_50%_-10%,rgba(236,72,153,0.10),transparent),linear-gradient(to_bottom,#050505,#030303)] py-16">
       <div className="absolute inset-0 bg-[radial-gradient(400px_200px_at_15%_0%,rgba(236,72,153,0.1),transparent),radial-gradient(500px_250px_at_85%_15%,rgba(20,184,166,0.08),transparent)]" />
       <div className="relative z-10 mx-auto max-w-3xl px-4">
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center">
@@ -409,7 +475,7 @@ function Actions() {
   }
 
   return (
-    <section className="relative bg-zinc-950 py-16">
+    <section id="dataset" className="relative bg-zinc-950 py-16">
       <div className="absolute inset-0 bg-[radial-gradient(500px_200px_at_15%_0%,rgba(236,72,153,0.1),transparent),radial-gradient(600px_260px_at_85%_10%,rgba(20,184,166,0.09),transparent)]" />
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-2">
@@ -422,6 +488,14 @@ function Actions() {
             whileInView="visible"
             viewport={{ once: true }}
             className="group relative flex items-center justify-between rounded-2xl border border-pink-500/40 bg-gradient-to-b from-zinc-900 to-black p-6 shadow-[0_0_40px_rgba(236,72,153,0.25)] transition-transform hover:-translate-y-0.5"
+            animate={{
+              boxShadow: [
+                '0 0 40px rgba(236,72,153,0.25)',
+                '0 0 60px rgba(236,72,153,0.45)'
+              ],
+              scale: [1, 1.01, 1],
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
             <div>
               <h4 className="text-2xl font-extrabold tracking-wide text-pink-300 drop-shadow-[0_0_18px_rgba(236,72,153,0.5)]">Get Dataset & Template</h4>
@@ -434,11 +508,13 @@ function Actions() {
           </motion.a>
 
           <motion.form
+            id="submit"
             onSubmit={handleUpload}
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
+            variants={tiltIn}
+            initial={{ opacity: 0, rotateX: -15, y: 30 }}
+            whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="relative rounded-2xl border border-teal-400/40 bg-gradient-to-b from-zinc-900 to-black p-6 shadow-[0_0_40px_rgba(20,184,166,0.25)]"
           >
             <div className="absolute inset-0 rounded-2xl ring-1 ring-teal-400/40 [box-shadow:inset_0_0_40px_rgba(20,184,166,0.3)]" />
@@ -507,13 +583,19 @@ function InitialAvatar({ name }) {
   )
 }
 
-function TeamMemberCard({ name, role, img }) {
+function TeamMemberCard({ name, role, img, index = 0 }) {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const rotateY = useTransform(scrollYProgress, [0, 1], [-6, 0])
+
   return (
     <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
+      ref={ref}
+      style={{ rotateY }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, delay: 0.05 * index }}
       className="group relative flex items-center gap-4 rounded-2xl border border-zinc-700/60 bg-gradient-to-b from-zinc-900/70 to-black/70 p-5 hover:border-pink-500/50 hover:shadow-[0_0_40px_rgba(236,72,153,0.25)]"
     >
       {img ? (
@@ -558,12 +640,12 @@ function TeamSection() {
 
         <div className="mt-8 grid gap-6">
           {/* Head */}
-          <TeamMemberCard name="Abdul Rahman Azam" role="Head" />
+          <TeamMemberCard name="Abdul Rahman Azam" role="Head" index={0} />
 
           {/* Co-Heads */}
           <div className="grid gap-6 sm:grid-cols-2">
-            <TeamMemberCard name="Mufeez Hanif" role="Co-Head" />
-            <TeamMemberCard name="Asfand Ahmed" role="Co-Head" />
+            <TeamMemberCard name="Mufeez Hanif" role="Co-Head" index={1} />
+            <TeamMemberCard name="Asfand Ahmed" role="Co-Head" index={2} />
           </div>
         </div>
 
@@ -582,10 +664,10 @@ function TeamSection() {
         </motion.div>
 
         <div className="mt-8 grid gap-6">
-          <TeamMemberCard name="Ali Hadi" role="Module Head" />
+          <TeamMemberCard name="Ali Hadi" role="Module Head" index={3} />
           <div className="grid gap-6 sm:grid-cols-2">
-            <TeamMemberCard name="Usman Ahmed" role="Co-Head" />
-            <TeamMemberCard name="Hani Ali" role="Co-Head" />
+            <TeamMemberCard name="Usman Ahmed" role="Co-Head" index={4} />
+            <TeamMemberCard name="Hani Ali" role="Co-Head" index={5} />
           </div>
         </div>
       </div>
@@ -599,6 +681,7 @@ function TeamSection() {
 export default function App() {
   return (
     <div className="min-h-screen w-full bg-black text-zinc-200">
+      <Navbar />
       <Hero />
       <Rules />
       <VideoShowcase />
