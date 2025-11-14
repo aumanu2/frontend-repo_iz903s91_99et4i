@@ -1,10 +1,13 @@
-import { useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Spline from '@splinetool/react-spline'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Upload, Play, Shield, ScrollText, TimerReset, Sparkles, MoveRight } from 'lucide-react'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
 const DATASET_URL = 'https://drive.google.com/drive/folders/1H8Kc-ExampleReplaceWithYourFolder' // replace with your drive link
+
+// Competition start: 2026-02-18 00:00 Asia/Karachi (UTC+05:00) -> 2026-02-17 19:00:00Z
+const COMPETITION_START_ISO = '2026-02-17T19:00:00Z'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -14,6 +17,22 @@ const fadeUp = {
 const tiltIn = {
   hidden: { opacity: 0, rotateX: 12, y: 40 },
   visible: { opacity: 1, rotateX: 0, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
+}
+
+function useCountdown(targetIso) {
+  const target = useMemo(() => new Date(targetIso).getTime(), [targetIso])
+  const [now, setNow] = useState(Date.now())
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(t)
+  }, [])
+  const diff = Math.max(0, target - now)
+  const s = Math.floor(diff / 1000)
+  const days = Math.floor(s / (3600 * 24))
+  const hours = Math.floor((s % (3600 * 24)) / 3600)
+  const minutes = Math.floor((s % 3600) / 60)
+  const seconds = s % 60
+  return { days, hours, minutes, seconds, done: diff === 0 }
 }
 
 function FloatingShapes() {
@@ -46,7 +65,7 @@ function NeonTitle() {
       variants={fadeUp}
       initial="hidden"
       animate="visible"
-      className="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight text-center select-none"
+      className="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight text-center select-none relative"
     >
       <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-400 via-pink-500 to-teal-300 drop-shadow-[0_0_25px_rgba(236,72,153,0.45)]">
         Vibe Coding
@@ -56,11 +75,93 @@ function NeonTitle() {
       </span>
       <div className="mt-4 flex items-center justify-center gap-3">
         <span className="h-5 w-5 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
-        <span className="h-5 w-5" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', boxShadow: '0 0 18px rgba(20,184,166,0.45)' }}
-          className="ring-2 ring-teal-400 bg-teal-400/20" />
+        <span className="h-5 w-5 ring-2 ring-teal-400 bg-teal-400/20" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', boxShadow: '0 0 18px rgba(20,184,166,0.45)' }} />
         <span className="h-5 w-5 bg-fuchsia-500/20 ring-2 ring-fuchsia-400" />
       </div>
+      {/* Doll standing near the title */}
+      <DollBot />
     </motion.h1>
+  )
+}
+
+function DollBot() {
+  // Stylized Red-Light/Green-Light doll with glowing eyes
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.6, duration: 0.8 }}
+      className="pointer-events-none absolute -right-4 sm:-right-12 md:-right-24 -top-6 sm:-top-8 md:-top-10 scale-[0.6] sm:scale-75 md:scale-90 lg:scale-100"
+      aria-hidden
+    >
+      <div className="relative">
+        {/* Head */}
+        <div className="relative mx-auto h-24 w-24 rounded-full bg-amber-200/90 ring-4 ring-amber-300/80 shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+          {/* Hair */}
+          <div className="absolute -top-1 left-1/2 h-10 w-20 -translate-x-1/2 rounded-b-[18px] bg-zinc-800" />
+          {/* Eyes */}
+          <div className="absolute left-6 top-10 h-3 w-3 rounded-full bg-rose-500 shadow-[0_0_18px_6px_rgba(244,63,94,0.6)]" />
+          <div className="absolute right-6 top-10 h-3 w-3 rounded-full bg-rose-500 shadow-[0_0_18px_6px_rgba(244,63,94,0.6)]" />
+          {/* Ominous glow */}
+          <div className="absolute -inset-1 rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(244,63,94,0.28),transparent_55%)] blur-[1px]" />
+        </div>
+        {/* Neck */}
+        <div className="mx-auto h-4 w-6 rounded-b-md bg-amber-300/80" />
+        {/* Body */}
+        <div className="relative mx-auto h-24 w-20 rounded-2xl bg-orange-400/90 ring-4 ring-orange-300/70">
+          <div className="absolute inset-0 rounded-2xl bg-[linear-gradient(to_bottom,rgba(0,0,0,0)_0%,rgba(0,0,0,0.1)_60%,rgba(0,0,0,0.25)_100%)]" />
+        </div>
+        {/* Arms & Legs */}
+        <div className="mx-auto mt-1 flex w-24 items-center justify-between">
+          <div className="h-10 w-3 rounded-full bg-orange-300" />
+          <div className="h-10 w-3 rounded-full bg-orange-300" />
+        </div>
+        <div className="mx-auto mt-1 flex w-20 items-center justify-between">
+          <div className="h-10 w-4 rounded-md bg-amber-700" />
+          <div className="h-10 w-4 rounded-md bg-amber-700" />
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function CountdownTimer() {
+  const { days, hours, minutes, seconds } = useCountdown(COMPETITION_START_ISO)
+  return (
+    <section className="relative z-10 mx-auto -mt-2 mb-10 max-w-3xl px-4">
+      <motion.div
+        variants={tiltIn}
+        initial="hidden"
+        animate="visible"
+        className="relative overflow-hidden rounded-2xl border border-rose-500/40 bg-zinc-950/70 p-5 shadow-[0_0_50px_rgba(244,63,94,0.28)] backdrop-blur-md"
+        style={{ perspective: '1200px' }}
+      >
+        {/* Blinking red warning beacons */}
+        <div className="pointer-events-none absolute -left-2 top-2 h-3 w-3 animate-ping rounded-full bg-rose-500" />
+        <div className="pointer-events-none absolute -right-2 top-2 h-3 w-3 animate-ping rounded-full bg-rose-500" />
+        <div className="pointer-events-none absolute -left-2 bottom-2 h-3 w-3 animate-ping rounded-full bg-rose-500" />
+        <div className="pointer-events-none absolute -right-2 bottom-2 h-3 w-3 animate-ping rounded-full bg-rose-500" />
+
+        <div className="relative z-10 grid grid-cols-4 gap-3 text-center">
+          {[{label:'Days', value: days}, {label:'Hours', value: hours}, {label:'Minutes', value: minutes}, {label:'Seconds', value: seconds}].map((it, i) => (
+            <motion.div
+              key={it.label}
+              custom={i}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="rounded-xl border border-rose-400/30 bg-gradient-to-b from-zinc-900/60 to-black/70 p-4 shadow-[inset_0_0_25px_rgba(244,63,94,0.15)]"
+            >
+              <div className="text-3xl font-extrabold tracking-widest text-rose-300 drop-shadow-[0_0_20px_rgba(244,63,94,0.45)]">
+                {String(it.value).padStart(2, '0')}
+              </div>
+              <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-rose-200/70">{it.label}</div>
+            </motion.div>
+          ))}
+        </div>
+        <p className="mt-3 text-center text-xs text-rose-200/70">Countdown to Competition Start</p>
+      </motion.div>
+    </section>
   )
 }
 
@@ -72,7 +173,7 @@ function Hero() {
 
       <FloatingShapes />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 pb-10 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 pb-4 sm:px-6 lg:px-8">
         <NeonTitle />
         <motion.p
           variants={fadeUp}
@@ -84,11 +185,13 @@ function Hero() {
           Enter the arena. Code smart, survive rounds, and claim the crown. Futuristic challenges, cinematic vibes, and neon-drenched glory.
         </motion.p>
 
+        <CountdownTimer />
+
         <motion.div
           variants={tiltIn}
           initial="hidden"
           animate="visible"
-          className="mt-10 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-fuchsia-500/30 bg-black/40 shadow-[0_0_40px_rgba(236,72,153,0.25)] backdrop-blur-md"
+          className="mt-6 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-fuchsia-500/30 bg-black/40 shadow-[0_0_40px_rgba(236,72,153,0.25)] backdrop-blur-md"
           style={{ perspective: '1200px' }}
         >
           <div className="relative h-full w-full">
@@ -187,6 +290,82 @@ function VideoShowcase() {
             <video className="h-full w-full object-cover opacity-30" playsInline controls={false} muted loop />
           </div>
         </motion.div>
+      </div>
+    </section>
+  )
+}
+
+function Door({ label, index }) {
+  // Door that opens on hover and when in view
+  return (
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      custom={index}
+      className="group relative mx-auto w-full max-w-md overflow-hidden rounded-2xl border border-pink-500/30 bg-gradient-to-b from-zinc-900/80 to-black/70 p-4 shadow-[0_20px_60px_-30px_rgba(236,72,153,0.35)]"
+    >
+      <div className="relative h-40 w-full rounded-xl bg-[url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1200&auto=format&fit=crop')] bg-cover bg-center">
+        {/* Left door */}
+        <motion.div
+          className="absolute inset-y-0 left-0 w-1/2 origin-left bg-zinc-950/90 backdrop-blur-[1px]"
+          whileHover={{ rotateY: -55 }}
+          transition={{ type: 'spring', stiffness: 120, damping: 14 }}
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(300px_120px_at_90%_50%,rgba(236,72,153,0.15),transparent)]" />
+          <div className="absolute right-3 top-1/2 h-8 w-1 -translate-y-1/2 rounded bg-zinc-700" />
+        </motion.div>
+        {/* Right door */}
+        <motion.div
+          className="absolute inset-y-0 right-0 w-1/2 origin-right bg-zinc-950/90 backdrop-blur-[1px]"
+          whileHover={{ rotateY: 55 }}
+          transition={{ type: 'spring', stiffness: 120, damping: 14 }}
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(300px_120px_at_10%_50%,rgba(20,184,166,0.15),transparent)]" />
+          <div className="absolute left-3 top-1/2 h-8 w-1 -translate-y-1/2 rounded bg-zinc-700" />
+        </motion.div>
+        {/* Label */}
+        <div className="absolute inset-0 grid place-items-center">
+          <p className="z-10 rounded-md bg-black/40 px-4 py-1 text-center text-sm font-semibold text-white ring-1 ring-white/10 backdrop-blur">
+            {label}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function CompetitionFlow() {
+  const steps = [
+    'Read rules',
+    'Watch demo',
+    'Download dataset & template',
+    'Train bot on the 3 maps',
+    'Upload bot code',
+  ]
+  return (
+    <section className="relative bg-[radial-gradient(800px_300px_at_50%_-10%,rgba(236,72,153,0.10),transparent),linear-gradient(to_bottom,#050505,#030303)] py-16">
+      <div className="absolute inset-0 bg-[radial-gradient(400px_200px_at_15%_0%,rgba(236,72,153,0.1),transparent),radial-gradient(500px_250px_at_85%_15%,rgba(20,184,166,0.08),transparent)]" />
+      <div className="relative z-10 mx-auto max-w-3xl px-4">
+        <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center">
+          <h3 className="text-3xl font-bold text-white">Competition Flow</h3>
+          <p className="mt-2 text-zinc-300/80">Pass through each door to reach the final upload.</p>
+        </motion.div>
+
+        <div className="relative mx-auto mt-10 flex max-w-2xl flex-col gap-8">
+          {/* Vertical line */}
+          <div className="pointer-events-none absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-pink-500/60 via-fuchsia-500/40 to-teal-400/60" />
+          {steps.map((label, i) => (
+            <div key={i} className="relative pl-8">
+              {/* Node */}
+              <div className="absolute left-0 top-3 grid h-8 w-8 place-items-center">
+                <span className="h-3 w-3 rounded-full bg-pink-500 shadow-[0_0_18px_rgba(236,72,153,0.8)] ring-2 ring-pink-400/70" />
+              </div>
+              <Door label={label} index={i} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -361,7 +540,7 @@ function ParallaxTokens() {
   return (
     <div ref={ref} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
       <motion.div style={{ y: y1 }} className="absolute left-6 top-10 h-16 w-16 rounded-full bg-pink-500/15 ring-2 ring-pink-500/40" />
-      <motion.div style={{ y: y2 }} className="absolute right-10 top-24 h-16 w-16 bg-teal-400/15 ring-2 ring-teal-400/40" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
+      <motion.div style={{ y: y2, clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} className="absolute right-10 top-24 h-16 w-16 bg-teal-400/15 ring-2 ring-teal-400/40" />
       <motion.div style={{ y: y3 }} className="absolute left-1/2 bottom-10 h-16 w-16 -translate-x-1/2 bg-fuchsia-500/15 ring-2 ring-fuchsia-400/40" />
     </div>
   )
@@ -392,7 +571,7 @@ function TeamSection() {
         <div className="my-10 flex items-center justify-center gap-3 opacity-80">
           <span className="h-1 w-24 rounded-full bg-pink-500/60 shadow-[0_0_20px_rgba(236,72,153,0.6)]" />
           <span className="h-3 w-3 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
-          <span className="h-3 w-3" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} className="ring-2 ring-teal-400 bg-teal-400/20" />
+          <span className="h-3 w-3 ring-2 ring-teal-400 bg-teal-400/20" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
           <span className="h-1 w-24 rounded-full bg-teal-400/60 shadow-[0_0_20px_rgba(20,184,166,0.6)]" />
         </div>
 
@@ -423,6 +602,7 @@ export default function App() {
       <Hero />
       <Rules />
       <VideoShowcase />
+      <CompetitionFlow />
       <Actions />
       <TeamSection />
       <footer className="border-t border-zinc-800 bg-black/80 py-10">
@@ -431,7 +611,7 @@ export default function App() {
             <p className="text-sm text-zinc-400">© {new Date().getFullYear()} Vibe Coding — Squid Game Edition</p>
             <div className="flex items-center gap-2 text-xs text-zinc-500">
               <span className="h-3 w-3 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
-              <span className="h-3 w-3" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} className="ring-2 ring-teal-400 bg-teal-400/20" />
+              <span className="h-3 w-3 ring-2 ring-teal-400 bg-teal-400/20" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
               <span className="h-3 w-3 bg-fuchsia-500/20 ring-2 ring-fuchsia-400" />
             </div>
           </div>
