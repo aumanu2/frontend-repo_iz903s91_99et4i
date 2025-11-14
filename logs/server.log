@@ -3,11 +3,11 @@
 > vite
 
 
-  VITE v5.4.20  ready in 219 ms
+  VITE v5.4.20  ready in 233 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: http://172.20.55.133:3000/
-9:48:36 AM [vite] warning: Duplicate "className" attribute in JSX element
+10:06:32 AM [vite] warning: Duplicate "className" attribute in JSX element
 58 |          <span className="h-5 w-5 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
 59 |          <span className="h-5 w-5" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)', boxShadow: '0 0 18px rgba(20,184,166,0.45)' }}
 60 |            className="ring-2 ring-teal-400 bg-teal-400/20" />
@@ -17,13 +17,33 @@
 
   Plugin: vite:esbuild
   File: /home/workspace/src/App.jsx
-9:48:36 AM [vite] warning: Duplicate "className" attribute in JSX element
-330|              <div className="flex items-center gap-2 text-xs text-zinc-500">
-331|                <span className="h-3 w-3 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
-332|                <span className="h-3 w-3" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} className="ring-2 ring-teal-400 bg-teal-400/20" />
+10:06:32 AM [vite] warning: Duplicate "style" attribute in JSX element
+362|      <div ref={ref} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+363|        <motion.div style={{ y: y1 }} className="absolute left-6 top-10 h-16 w-16 rounded-full bg-pink-500/15 ring-2 ring-pink-500/40" />
+364|        <motion.div style={{ y: y2 }} className="absolute right-10 top-24 h-16 w-16 bg-teal-400/15 ring-2 ring-teal-400/40" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
+   |                                                                                                                            ^
+365|        <motion.div style={{ y: y3 }} className="absolute left-1/2 bottom-10 h-16 w-16 -translate-x-1/2 bg-fuchsia-500/15 ring-2 ring-fuchsia-400/40" />
+366|      </div>
+
+  Plugin: vite:esbuild
+  File: /home/workspace/src/App.jsx
+10:06:32 AM [vite] warning: Duplicate "className" attribute in JSX element
+393|            <span className="h-1 w-24 rounded-full bg-pink-500/60 shadow-[0_0_20px_rgba(236,72,153,0.6)]" />
+394|            <span className="h-3 w-3 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
+395|            <span className="h-3 w-3" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} className="ring-2 ring-teal-400 bg-teal-400/20" />
+   |                                                                                                  ^
+396|            <span className="h-1 w-24 rounded-full bg-teal-400/60 shadow-[0_0_20px_rgba(20,184,166,0.6)]" />
+397|          </div>
+
+  Plugin: vite:esbuild
+  File: /home/workspace/src/App.jsx
+10:06:32 AM [vite] warning: Duplicate "className" attribute in JSX element
+432|              <div className="flex items-center gap-2 text-xs text-zinc-500">
+433|                <span className="h-3 w-3 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
+434|                <span className="h-3 w-3" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} className="ring-2 ring-teal-400 bg-teal-400/20" />
    |                                                                                                      ^
-333|                <span className="h-3 w-3 bg-fuchsia-500/20 ring-2 ring-fuchsia-400" />
-334|              </div>
+435|                <span className="h-3 w-3 bg-fuchsia-500/20 ring-2 ring-fuchsia-400" />
+436|              </div>
 
   Plugin: vite:esbuild
   File: /home/workspace/src/App.jsx

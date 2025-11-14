@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import Spline from '@splinetool/react-spline'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { Upload, Play, Shield, ScrollText, TimerReset, Sparkles, MoveRight } from 'lucide-react'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000'
@@ -316,6 +316,107 @@ function Actions() {
   )
 }
 
+function InitialAvatar({ name }) {
+  const initials = name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()
+  return (
+    <div className="relative h-20 w-20 overflow-hidden rounded-xl ring-2 ring-pink-500/50 shadow-[0_0_30px_rgba(236,72,153,0.35)]">
+      <div className="absolute inset-0 bg-gradient-to-br from-pink-500/30 via-fuchsia-500/20 to-teal-400/30" />
+      <div className="absolute inset-0 grid place-items-center text-2xl font-extrabold text-white/90">
+        {initials}
+      </div>
+    </div>
+  )
+}
+
+function TeamMemberCard({ name, role, img }) {
+  return (
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      className="group relative flex items-center gap-4 rounded-2xl border border-zinc-700/60 bg-gradient-to-b from-zinc-900/70 to-black/70 p-5 hover:border-pink-500/50 hover:shadow-[0_0_40px_rgba(236,72,153,0.25)]"
+    >
+      {img ? (
+        <img src={img} alt={name} className="h-20 w-20 rounded-xl object-cover ring-2 ring-pink-500/50" />
+      ) : (
+        <InitialAvatar name={name} />
+      )}
+      <div className="relative z-10">
+        <p className="text-base font-semibold text-white">{name}</p>
+        <p className="text-sm text-zinc-300/75">{role}</p>
+      </div>
+      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-[radial-gradient(600px_200px_at_50%_-10%,rgba(236,72,153,0.15),transparent)]" />
+    </motion.div>
+  )
+}
+
+function ParallaxTokens() {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const y1 = useTransform(scrollYProgress, [0, 1], [40, -40])
+  const y2 = useTransform(scrollYProgress, [0, 1], [-20, 20])
+  const y3 = useTransform(scrollYProgress, [0, 1], [60, -60])
+
+  return (
+    <div ref={ref} aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <motion.div style={{ y: y1 }} className="absolute left-6 top-10 h-16 w-16 rounded-full bg-pink-500/15 ring-2 ring-pink-500/40" />
+      <motion.div style={{ y: y2 }} className="absolute right-10 top-24 h-16 w-16 bg-teal-400/15 ring-2 ring-teal-400/40" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} />
+      <motion.div style={{ y: y3 }} className="absolute left-1/2 bottom-10 h-16 w-16 -translate-x-1/2 bg-fuchsia-500/15 ring-2 ring-fuchsia-400/40" />
+    </div>
+  )
+}
+
+function TeamSection() {
+  return (
+    <section className="relative overflow-hidden bg-[radial-gradient(800px_400px_at_50%_-10%,rgba(236,72,153,0.10),transparent),linear-gradient(to_bottom,rgba(0,0,0,0.9),#050505)] py-16">
+      <ParallaxTokens />
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center">
+          <h3 className="text-3xl font-bold text-white">AI Competitions Team</h3>
+          <p className="mx-auto mt-2 max-w-2xl text-zinc-300/80">Meet the game masters guiding your run through the arena.</p>
+        </motion.div>
+
+        <div className="mt-8 grid gap-6">
+          {/* Head */}
+          <TeamMemberCard name="Abdul Rahman Azam" role="Head" />
+
+          {/* Co-Heads */}
+          <div className="grid gap-6 sm:grid-cols-2">
+            <TeamMemberCard name="Mufeez Hanif" role="Co-Head" />
+            <TeamMemberCard name="Asfand Ahmed" role="Co-Head" />
+          </div>
+        </div>
+
+        {/* Divider flair */}
+        <div className="my-10 flex items-center justify-center gap-3 opacity-80">
+          <span className="h-1 w-24 rounded-full bg-pink-500/60 shadow-[0_0_20px_rgba(236,72,153,0.6)]" />
+          <span className="h-3 w-3 rounded-full ring-2 ring-pink-500 bg-pink-500/20" />
+          <span className="h-3 w-3" style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }} className="ring-2 ring-teal-400 bg-teal-400/20" />
+          <span className="h-1 w-24 rounded-full bg-teal-400/60 shadow-[0_0_20px_rgba(20,184,166,0.6)]" />
+        </div>
+
+        {/* Module Team */}
+        <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center">
+          <h3 className="text-3xl font-bold text-white">Module Team</h3>
+          <p className="mx-auto mt-2 max-w-2xl text-zinc-300/80">The specialists behind the modules you will face.</p>
+        </motion.div>
+
+        <div className="mt-8 grid gap-6">
+          <TeamMemberCard name="Ali Hadi" role="Module Head" />
+          <div className="grid gap-6 sm:grid-cols-2">
+            <TeamMemberCard name="Usman Ahmed" role="Co-Head" />
+            <TeamMemberCard name="Hani Ali" role="Co-Head" />
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky squid-game stripe for scroll wow */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black to-transparent" />
+    </section>
+  )
+}
+
 export default function App() {
   return (
     <div className="min-h-screen w-full bg-black text-zinc-200">
@@ -323,6 +424,7 @@ export default function App() {
       <Rules />
       <VideoShowcase />
       <Actions />
+      <TeamSection />
       <footer className="border-t border-zinc-800 bg-black/80 py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
